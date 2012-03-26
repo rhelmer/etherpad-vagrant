@@ -1,0 +1,44 @@
+This project will use vagrant and puppet to 
+install a complete etherpad-lite (https://github.com/Pita/etherpad-lite)
+environment in a local VM.
+
+---
+INSTALL
+---
+
+1) Install the latest Virtualbox from http://www.virtualbox.org/ 
+
+2) Install vagrant from http://vagrantup.com/
+
+3) Clone etherpad-lite and add etherpad-vagrant as submodule
+
+$ git clone https://github.com/Pita/etherpad-lite.git
+$ cd etherpad-lite
+$ git submodule add https://github.com/rhelmer/etherpad-vagrant.git
+
+4) build VM and provision with puppet
+
+$ cd ./vagrant
+$ vagrant up
+
+3) Add 33.33.33.10 to /etc/hosts:
+33.33.33.10	etherpad
+
+5) Enjoy your Etherpad environment!
+
+dashboard:      http://etherpad
+
+You can modify files directly in the checkout on the host machine.
+Here are some common vagrant operations:
+
+SSH into your VM:
+$ vagrant ssh
+
+Re-run puppet
+$ vagrant provision
+
+Reboot VM and re-run puppet
+$ vagrant provision
+
+Destroy VM and rebuild from scratch
+$ vagrant desroy && vagrant up 
