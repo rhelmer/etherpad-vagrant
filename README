@@ -18,7 +18,7 @@ $ git submodule add https://github.com/rhelmer/etherpad-vagrant.git
 
 4) build VM and provision with puppet
 
-$ cd ./vagrant
+$ cd ./etherpad-vagrant
 $ vagrant up
 
 3) Add 33.33.33.10 to /etc/hosts:
