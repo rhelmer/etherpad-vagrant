@@ -38,7 +38,7 @@ Re-run puppet
 $ vagrant provision
 
 Reboot VM and re-run puppet
-$ vagrant provision
+$ vagrant reload
 
 Destroy VM and rebuild from scratch
 $ vagrant desroy && vagrant up 
