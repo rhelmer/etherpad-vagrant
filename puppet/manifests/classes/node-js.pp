@@ -13,13 +13,14 @@ class node-js {
             alias => "download-node",
             user => "etherpad",
             cwd => "/home/etherpad/dev/",
+            creates => "/home/etherpad/dev/node-${node_version}.tar.gz",
             require => File["/home/etherpad/dev"];
 
         "/bin/tar zxf node-${node_version}.tar.gz":
             alias => "unpack-node",
             user => "etherpad",
             cwd => "/home/etherpad/dev/",
-            creates => "/home/etherpad/dev/etherpad/node-${node_version}",
+            creates => "/home/etherpad/dev/node-${node_version}",
             require => Exec["download-node"];
 
         "/home/etherpad/dev/node-${node_version}/configure --prefix=/home/etherpad/node-${node_version} && /usr/bin/make install":
@@ -35,6 +36,7 @@ class node-js {
             alias => "download-npm",
             user => "etherpad",
             cwd => "/home/etherpad/dev/",
+            creates => "/home/etherpad/dev/npm-${npm_version}.tgz",
             require => Exec["install-node"];
 
         "/bin/mkdir npm-${npm_version} && /bin/tar -C npm-${npm_version} -xf npm-${npm_version}.tgz":
