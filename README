@@ -21,10 +21,10 @@ $ git submodule add https://github.com/rhelmer/etherpad-vagrant.git
 $ cd ./etherpad-vagrant
 $ vagrant up
 
-3) Add 33.33.33.10 to /etc/hosts:
+5) Add 33.33.33.10 to /etc/hosts:
 33.33.33.10	etherpad
 
-5) Enjoy your Etherpad environment!
+6) Enjoy your Etherpad environment!
 
 dashboard:      http://etherpad
 
