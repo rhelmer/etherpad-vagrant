@@ -8,49 +8,64 @@ class node-js {
         alias => "apt-get-update";
     }
 
+    file { "install-base":
+        path => "${install_base}",
+        owner => "${install_user}",
+        mode  => 775,
+        ensure => directory;
+    }
+
+    file { "source-base":
+        path => "${source_base}",
+        owner => "${install_user}",
+        mode  => 775,
+        ensure => directory;
+    }
+
     exec {
         "/usr/bin/wget -N http://nodejs.org/dist/${node_version}/node-${node_version}.tar.gz":
             alias => "download-node",
-            user => "etherpad",
-            cwd => "/home/etherpad/dev/",
-            creates => "/home/etherpad/dev/node-${node_version}.tar.gz",
-            require => File["/home/etherpad/dev"];
+            user => "${install_user}",
+            cwd => "${source_base}",
+            require => File["install-base"],
+            creates => "${source_base}/node-${node_version}.tar.gz";
 
         "/bin/tar zxf node-${node_version}.tar.gz":
             alias => "unpack-node",
-            user => "etherpad",
-            cwd => "/home/etherpad/dev/",
-            creates => "/home/etherpad/dev/node-${node_version}",
+            user => "${install_user}",
+            cwd => "${source_base}",
+            creates => "${source_base}/node-${node_version}",
             require => Exec["download-node"];
 
-        "/home/etherpad/dev/node-${node_version}/configure --prefix=/home/etherpad/node-${node_version} && /usr/bin/make install":
+        "${source_base}/node-${node_version}/configure --prefix=${install_base}/node-${node_version} && /usr/bin/make install":
             alias => "install-node",
-            environment => "HOME=/home/etherpad",
-            user => "etherpad",
-            cwd => "/home/etherpad/dev/node-${node_version}",
-            creates => "/home/etherpad/node-${node_version}",
+            environment => "HOME=${install_base}",
+            user => "${install_user}",
+            cwd => "${source_base}/node-${node_version}",
+            creates => "${install_base}/node-${node_version}",
             timeout => 0,
             require => [Exec["unpack-node"], Package["build-essential"]];
 
         "/usr/bin/wget -N http://registry.npmjs.org/npm/-/npm-${npm_version}.tgz":
             alias => "download-npm",
-            user => "etherpad",
-            cwd => "/home/etherpad/dev/",
-            creates => "/home/etherpad/dev/npm-${npm_version}.tgz",
+            user => "${install_user}",
+            cwd => "${source_base}",
+            creates => "${source_base}/npm-${npm_version}.tgz",
             require => Exec["install-node"];
 
         "/bin/mkdir npm-${npm_version} && /bin/tar -C npm-${npm_version} -xf npm-${npm_version}.tgz":
             alias => "unpack-npm",
-            user => "etherpad",
-            cwd => "/home/etherpad/dev/",
-            creates => "/home/etherpad/dev/npm-${npm_version}",
+            user => "${install_user}",
+            cwd => "${source_base}",
+            creates => "${source_base}/npm-${npm_version}",
             require => Exec["download-npm"];
 
         "/usr/bin/make install":
             alias => "install-npm",
-            environment => ["HOME=/home/etherpad", "UID=10000"],
-            user => "etherpad",
-            cwd => "/home/etherpad/dev/npm-${npm_version}/package",
+            environment => ["HOME=${install_base}"],
+            user => "${install_user}",
+            cwd => "${source_base}/npm-${npm_version}/package",
+            creates => "${install_base}/node-${node_version}/lib/node_modules/npm/",
             require => Exec["unpack-npm"];
     }
 }
